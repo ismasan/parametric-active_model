@@ -102,4 +102,12 @@ RSpec.describe Parametric::ActiveModel do
       expect(friend).to be_a FriendForm
     end
   end
+
+  context 'with instances of ActionController::Parameters' do
+    it 'permits all and symbolizes keys' do
+      params = double('Params', permit!: {'name' => 'foo'})
+      form = user_form.new(params)
+      expect(form.name).to eq 'foo'
+    end
+  end
 end
