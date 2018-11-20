@@ -52,7 +52,7 @@ RSpec.describe Parametric::ActiveModel do
     end
   end
 
-  context 'nested objects' do
+  context 'nested anonymous objects' do
     let(:form) {
       user_form.new(
         name: 'Ismael',
@@ -64,5 +64,42 @@ RSpec.describe Parametric::ActiveModel do
 
     subject { form.friends.first }
     it_behaves_like 'ActiveModel'
+  end
+
+  context 'nested objects with named schemas' do
+    FriendForm = Class.new(described_class) do
+      self.name = 'friend'
+      schema do
+        field(:name).type(:string).present
+        field(:age).type(:integer)
+      end
+    end
+
+    let(:user_form) {
+      Class.new(described_class) do
+        self.name = 'user'
+
+        schema do
+          field(:name).type(:string).present
+          field(:friends).type(:array).schema FriendForm
+        end
+      end
+    }
+
+    let(:form) {
+      user_form.new(
+        name: 'Ismael',
+        friends: [
+          {name: 'Joe', age: 34}
+        ]
+      )
+    }
+
+    subject(:friend) { form.friends.first }
+    it_behaves_like 'ActiveModel'
+
+    it 'wraps nested object in given class' do
+      expect(friend).to be_a FriendForm
+    end
   end
 end
