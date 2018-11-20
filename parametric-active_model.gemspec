@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "parametric/active_model/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "parametric-activemodel"
+  spec.name          = "parametric-active_model"
   spec.version       = Parametric::ActiveModel::VERSION
   spec.authors       = ["Ismael Celis"]
   spec.email         = ["ismaelct@gmail.com"]
