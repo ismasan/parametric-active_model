@@ -3,11 +3,7 @@ PATH
   specs:
     parametric-activemodel (0.1.0)
       activemodel (~> 5.1)
-
-PATH
-  remote: /Users/ismasan/code/personal/gems/parametric
-  specs:
-    parametric (0.2.4)
+      parametric (~> 0.2.5)
 
 GEM
   remote: https://rubygems.org/
@@ -25,6 +21,7 @@ GEM
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     minitest (5.11.3)
+    parametric (0.2.5)
     rake (10.1.1)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -49,7 +46,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   byebug
-  parametric!
   parametric-activemodel!
   rake (~> 10.0)
   rspec (~> 3.0)
