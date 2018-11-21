@@ -1,8 +1,78 @@
-# Parametric::Activemodel
+# Parametric::Activemodel (WiP)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/parametric/activemodel`. To experiment with that code, run `bin/console` for an interactive prompt.
+Turn [Parametric schemas](https://github.com/ismasan/parametric) into ActiveModel-compliant form objects, including validations.
 
-TODO: Delete this and the text above, and describe your gem
+## Usage
+
+Define your forms.
+
+```ruby
+require 'parametric/active_model'
+
+class User < Parametric::ActiveModel
+  schema do
+    field(:name).type(:string).present
+    field(:friends).type(:array).schema do
+      field(:name).type(:string).present
+      field(:age).type(:integer)
+    end
+  end
+
+  def save!
+    # do something here
+  end
+end
+```
+
+Now use it in Rails controllers:
+
+```ruby
+def new
+  @user = User.new
+end
+
+def create
+  @user = User.new(params[:user])
+  @user.save!
+end
+```
+
+Views work normally:
+
+```erb
+<%= form_for @user do |f| %>
+  <%= f.text_field :name %>
+  <!-- nested objects -->
+  <%= f.fields_for :friends do |friend| %>
+    <%= friend.text_field :name %>
+    <%= friend.text_field :age %>
+  <% end %>
+<% end %>
+```
+
+## Nested forms
+
+You can also use nested form objects:
+
+```ruby
+class Friend < Parametric::ActiveModel
+  schema do
+    field(:name).type(:string).present
+    field(:age).type(:integer)
+  end
+end
+
+# now embed it in the parent form
+
+class User < Parametric::ActiveModel
+  schema do
+    field(:name).type(:string).present
+    field(:friends).type(:array).schema Friend # <== here!
+  end
+
+  # etc..
+end
+```
 
 ## Installation
 
