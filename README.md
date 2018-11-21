@@ -79,7 +79,7 @@ end
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'parametric-activemodel'
+gem 'parametric-active_model'
 ```
 
 And then execute:
@@ -88,7 +88,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install parametric-activemodel
+    $ gem install parametric-active_model
 
 ## Usage
 
@@ -102,7 +102,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/parametric-activemodel.
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/parametric-active_model.
 
 ## License
 
