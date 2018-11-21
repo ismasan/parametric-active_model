@@ -110,4 +110,20 @@ RSpec.describe Parametric::ActiveModel do
       expect(form.name).to eq 'foo'
     end
   end
+
+  context 'with *_attributes keys sent by Rails forms' do
+    it 'maps them to the correct keys' do
+      form = user_form.new(
+        name: 'Foo',
+        friends_attributes: {
+          '0' => {name: 'Joe', age: 34},
+          '1' => {name: 'Joan', age: 43}
+        }
+      )
+
+      expect(form.name).to eq 'Foo'
+      expect(form.friends.first.name).to eq 'Joe'
+      expect(form.friends.first.age).to eq 34
+    end
+  end
 end

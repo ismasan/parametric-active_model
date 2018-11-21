@@ -28,13 +28,20 @@ module Parametric
       klass
     end
 
+    class_attribute :parametric_array_setters
+    self.parametric_array_setters = {}
+
     def self.parametric_after_define_schema(schema)
       schema.fields.each do |key, field|
         define_method key do
           _graph[key]
         end
         if field.meta_data[:type] == :array
-          define_method "#{key.to_s.pluralize}_attributes=".to_sym do |*args|
+          collection_name = key.to_s.pluralize
+          attr_method = "#{collection_name}_attributes".to_sym
+          self.parametric_array_setters[attr_method] = collection_name
+
+          define_method "#{attr_method}=".to_sym do |*args|
             # do nothing. We need this just so AM renders nested arrays in forms!
           end
         end
@@ -43,7 +50,8 @@ module Parametric
 
     def initialize(data = {})
       data = data.permit! if data.respond_to?(:permit!)
-      super data.to_hash.deep_symbolize_keys
+      data = _map_rails_fields(data.to_hash.deep_symbolize_keys)
+      super data
     end
 
     def options_for(field)
@@ -79,6 +87,17 @@ module Parametric
     private
     def _is_array_error?(key)
       !!(key =~ /\[\d+\]/)
+    end
+
+    def _map_rails_fields(hash)
+      hash.each_with_object({}) do |(k, v), obj|
+        if collection_name = parametric_array_setters[k]
+          k = collection_name.to_sym
+          v = v.values
+        end
+        v = _map_rails_fields(v) if v.is_a?(Hash)
+        obj[k] = v
+      end
     end
   end
 end
