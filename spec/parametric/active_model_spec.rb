@@ -128,6 +128,8 @@ RSpec.describe Parametric::ActiveModel do
       expect(form.name).to eq 'Foo'
       expect(form.friends.first.name).to eq 'Joe'
       expect(form.friends.first.age).to eq 34
+      # we need this method for Rails forms to work
+      expect(form).to respond_to :friends_attributes=
     end
 
     it 'maps Rails objects to the correct keys' do
@@ -140,6 +142,8 @@ RSpec.describe Parametric::ActiveModel do
 
       expect(form.name).to eq 'Foo'
       expect(form.account.name).to eq 'ACME'
+      # we need this method for Rails forms to work
+      expect(form).to respond_to :account_attributes=
     end
   end
 end

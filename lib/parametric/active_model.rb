@@ -36,21 +36,20 @@ module Parametric
         define_method key do
           _graph[key]
         end
+        attr_method = nil
         if field.meta_data[:type] == :array
           collection_name = key.to_s.pluralize
           attr_method = "#{collection_name}_attributes".to_sym
           self.parametric_rails_form_setters[:arrays][attr_method] = collection_name
-
-          define_method "#{attr_method}=".to_sym do |*args|
-            # do nothing. We need this just so AM renders nested arrays in forms!
-          end
-        elsif field.meta_data[:type] == :array || field.meta_data[:schema].present?
+        elsif field.meta_data[:schema].present? # nested object
           object_name = key.to_s.singularize
           attr_method = "#{object_name}_attributes".to_sym
           self.parametric_rails_form_setters[:objects][attr_method] = object_name
+        end
 
+        if attr_method
           define_method "#{attr_method}=".to_sym do |*args|
-            # do nothing. We need this just so AM renders nested objects in forms!
+            # do nothing. We need this just so AM renders nested arrays in forms!
           end
         end
       end
@@ -59,7 +58,7 @@ module Parametric
     def initialize(data = {})
       data = data.permit! if data.respond_to?(:permit!)
       data = _map_rails_fields(data.to_hash.deep_symbolize_keys)
-      super data
+      super map_input_data(data)
     end
 
     def options_for(field)
@@ -93,8 +92,15 @@ module Parametric
     end
 
     private
+    ARRAY_ERR_EXP = /\[\d+\]/.freeze
+
+    # Override this to map input data before building struct
+    def map_input_data(hash)
+      hash
+    end
+
     def _is_array_error?(key)
-      !!(key =~ /\[\d+\]/)
+      !!(key =~ ARRAY_ERR_EXP)
     end
 
     def _map_rails_fields(hash)
