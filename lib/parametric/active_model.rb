@@ -28,8 +28,8 @@ module Parametric
       klass
     end
 
-    class_attribute :parametric_array_setters
-    self.parametric_array_setters = {}
+    class_attribute :parametric_rails_form_setters
+    self.parametric_rails_form_setters = {arrays: {}, objects: {}}
 
     def self.parametric_after_define_schema(schema)
       schema.fields.each do |key, field|
@@ -39,10 +39,18 @@ module Parametric
         if field.meta_data[:type] == :array
           collection_name = key.to_s.pluralize
           attr_method = "#{collection_name}_attributes".to_sym
-          self.parametric_array_setters[attr_method] = collection_name
+          self.parametric_rails_form_setters[:arrays][attr_method] = collection_name
 
           define_method "#{attr_method}=".to_sym do |*args|
             # do nothing. We need this just so AM renders nested arrays in forms!
+          end
+        elsif field.meta_data[:type] == :array || field.meta_data[:schema].present?
+          object_name = key.to_s.singularize
+          attr_method = "#{object_name}_attributes".to_sym
+          self.parametric_rails_form_setters[:objects][attr_method] = object_name
+
+          define_method "#{attr_method}=".to_sym do |*args|
+            # do nothing. We need this just so AM renders nested objects in forms!
           end
         end
       end
@@ -91,9 +99,11 @@ module Parametric
 
     def _map_rails_fields(hash)
       hash.each_with_object({}) do |(k, v), obj|
-        if collection_name = parametric_array_setters[k]
+        if collection_name = parametric_rails_form_setters[:arrays][k]
           k = collection_name.to_sym
           v = v.values
+        elsif object_name = parametric_rails_form_setters[:objects][k]
+          k = object_name.to_sym
         end
         v = _map_rails_fields(v) if v.is_a?(Hash)
         obj[k] = v

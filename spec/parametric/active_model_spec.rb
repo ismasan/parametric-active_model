@@ -27,6 +27,9 @@ RSpec.describe Parametric::ActiveModel do
           field(:name).type(:string).present
           field(:age).type(:integer)
         end
+        field(:account).schema do
+          field(:name).type(:string)
+        end
       end
     end
   }
@@ -91,7 +94,8 @@ RSpec.describe Parametric::ActiveModel do
         name: 'Ismael',
         friends: [
           {name: 'Joe', age: 34}
-        ]
+        ],
+        account: {name: 'abc'}
       )
     }
 
@@ -112,7 +116,7 @@ RSpec.describe Parametric::ActiveModel do
   end
 
   context 'with *_attributes keys sent by Rails forms' do
-    it 'maps them to the correct keys' do
+    it 'maps Rails arrays to the correct keys' do
       form = user_form.new(
         name: 'Foo',
         friends_attributes: {
@@ -124,6 +128,18 @@ RSpec.describe Parametric::ActiveModel do
       expect(form.name).to eq 'Foo'
       expect(form.friends.first.name).to eq 'Joe'
       expect(form.friends.first.age).to eq 34
+    end
+
+    it 'maps Rails objects to the correct keys' do
+      form = user_form.new(
+        name: 'Foo',
+        account_attributes: {
+          name: 'ACME'
+        }
+      )
+
+      expect(form.name).to eq 'Foo'
+      expect(form.account.name).to eq 'ACME'
     end
   end
 end
