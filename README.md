@@ -1,4 +1,4 @@
-# Parametric::Activemodel (WiP)
+# Parametric::ActiveModel (WiP)
 
 Turn [Parametric schemas](https://github.com/ismasan/parametric) into ActiveModel-compliant form objects, including validations.
 
