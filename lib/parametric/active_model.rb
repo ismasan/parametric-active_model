@@ -53,6 +53,7 @@ module Parametric
           end
         end
       end
+      self.parametric_rails_form_setters.freeze
     end
 
     def initialize(data = {})
