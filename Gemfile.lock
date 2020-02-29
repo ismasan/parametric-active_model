@@ -22,7 +22,7 @@ GEM
       concurrent-ruby (~> 1.0)
     minitest (5.11.3)
     parametric (0.2.5)
-    rake (10.1.1)
+    rake (13.0.1)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -47,7 +47,7 @@ DEPENDENCIES
   bundler (~> 1.16)
   byebug
   parametric-active_model!
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
 
 BUNDLED WITH
